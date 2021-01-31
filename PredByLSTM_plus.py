@@ -19,7 +19,7 @@ class CLIENT_STATE:
     def __init__(self):
         self.num_poi_class = 8
         self.num_sl_class = 7
-        self.train_epoch = 200
+        self.train_epoch = 50
         self.look_back = 6
         self.Batch_Size = 5
         self.lstm_units = 50
@@ -104,12 +104,11 @@ class CLIENT_STATE:
         print(model.metrics_names)
         print(eval)
         print(type(eval))
-        print('\ntotal loss: ', eval[0])
-        print('poi loss: ', eval[1])
-        print('poi acc: ', eval[2])
+        print('poi eval loss: ', eval[0])
+        print('poi eval acc: ', eval[1])
 
         y_pred = model.predict(x_test)
-        pred_poi = [np.argmax(one_hot) for one_hot in y_pred[0]]
+        pred_poi = [np.argmax(one_hot) for one_hot in y_pred]
         real_poi = [np.argmax(one_hot) for one_hot in y_test]
 
         print('\nreal_poi: ')
@@ -118,10 +117,10 @@ class CLIENT_STATE:
         print(pred_poi)
 
 
-        tra_poi_loss = history.history['output_poi_loss']
-        val_poi_loss = history.history['val_output_poi_loss']
-        tra_poi_acc = history.history['output_poi_acc']
-        val_poi_acc = history.history['val_output_poi_acc']
+        tra_poi_loss = history.history['loss']
+        val_poi_loss = history.history['val_loss']
+        tra_poi_acc = history.history['acc']
+        val_poi_acc = history.history['val_acc']
 
         # plot train history
         plt.subplot(2, 1, 1)
@@ -129,13 +128,13 @@ class CLIENT_STATE:
         plt.plot(val_poi_loss, label='val_poi_loss')
         plt.legend()
 
-        plot_title = 'poi_loss: ' + str(eval[1])[:6]
+        plot_title = 'poi_train_loss: ' + str(eval[0])[:6]
         plt.title(plot_title)
         plt.subplot(2, 1, 2)
         plt.plot(tra_poi_acc, label='poi_acc')
         plt.plot(val_poi_acc, label='val_poi_acc')
         plt.legend()
-        plot_title = ' poi_acc: ' + str(eval[3])[:6]
+        plot_title = 'poi_train_acc: ' + str(eval[1])[:6]
         plt.title(plot_title)
         plt.show()
 
@@ -148,7 +147,7 @@ class CLIENT_STATE:
         np_out = np.concatenate([tra_poi_loss, val_poi_loss,
                                  tra_poi_acc, val_poi_acc], axis=0)
 
-        np.savetxt('./lstm_acc_loss6.txt', np_out)
+        np.savetxt('./lstm_acc_loss_epoch50.txt', np_out)
 
         # # save model and weights:
         # model_path = './pred_model/c1_pred_model2.h5'
