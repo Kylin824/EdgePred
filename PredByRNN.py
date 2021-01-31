@@ -339,7 +339,7 @@ if __name__ == "__main__":
 
     fc = CLIENT_STATE()
 
-    dataset = pd.read_csv('./c1_poi.csv')
+    dataset = pd.read_csv('./c1_poi_cluster.csv')
 
     value = dataset.values
 
